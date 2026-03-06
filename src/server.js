@@ -22,9 +22,10 @@ app.get(/^\/(.+)\.png$/i, (req, res) => {
   const fingers  = req.query.fingers  || req.query.f || '------';
   const size     = req.query.size     || req.query.s || '1';
   const baseFret = req.query.baseFret || req.query.b || null;
+  const tuning   = req.query.tuning   || req.query.t || null;
 
   try {
-    const image = new ChordBoxImage(chordName, pos, fingers, size, baseFret);
+    const image = new ChordBoxImage(chordName, pos, fingers, size, baseFret, tuning);
 
     res.setHeader('Content-Type', 'image/png');
     res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days

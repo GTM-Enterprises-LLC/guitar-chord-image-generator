@@ -23,17 +23,19 @@ const FONT_NAME = 'Arial';
 const FONT_PERC = 0.905;
 
 class ChordBoxImage {
-  constructor(name, chord, fingers, size, baseFret) {
+  constructor(name, chord, fingers, size, baseFret, tuning) {
     this._chordPositions = [0, 0, 0, 0, 0, 0];
     this._fingers = [NO_FINGER, NO_FINGER, NO_FINGER, NO_FINGER, NO_FINGER, NO_FINGER];
     this._error = false;
     this._baseFret = 1;
+    this._tuning = null;
 
     this._chordName = this._parseName(name);
     this._parseChord(chord);
     this._parseBaseFret(baseFret);
     this._parseFingers(fingers);
     this._parseSize(size);
+    this._parseTuning(tuning);
     this._initializeSizes();
     this._createImage();
   }
@@ -87,6 +89,13 @@ class ChordBoxImage {
       }
     }
     this._baseFret = bf;
+  }
+
+  _parseTuning(tuning) {
+    if (!tuning) return;
+    const parts = tuning.split(',').map(s => s.trim());
+    if (parts.length !== 6) return;
+    this._tuning = parts;
   }
 
   _parseFingers(fingers) {
@@ -156,8 +165,12 @@ class ChordBoxImage {
     this._ystart = Math.round(
       0.2 * this._superScriptFontSize + this._nameFontSize + this._nutHeight + 1.7 * this._markerWidth
     );
+    this._tuningFontSize = this._fingerFontSize;
     this._imageWidth = Math.round(this._boxWidth + 5 * this._fretWidth);
     this._imageHeight = Math.round(this._boxHeight + this._ystart + 2 * this._fretWidth);
+    if (this._tuning) {
+      this._imageHeight += Math.ceil(this._tuningFontSize * 1.4);
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -189,6 +202,7 @@ class ChordBoxImage {
       this._drawChordPositions();
       this._drawChordName();
       this._drawFingers();
+      this._drawTuning();
       this._drawBars();
     }
   }
@@ -349,6 +363,28 @@ class ChordBoxImage {
         const w = ctx.measureText(finger).width;
         ctx.fillText(finger, xpos - 0.5 * w, ypos);
       }
+      xpos += fw + lw;
+    }
+  }
+
+  _drawTuning() {
+    if (!this._tuning) return;
+    const ctx = this._ctx;
+    const { _tuning: tuning, _xstart: xs, _ystart: ys, _boxHeight: bh,
+            _fretWidth: fw, _lineWidth: lw, _tuningFontSize: fs,
+            _fingerFontSize: ffs } = this;
+
+    ctx.font = `${fs}px ${FONT_NAME}`;
+    ctx.fillStyle = 'black';
+    ctx.textBaseline = 'top';
+
+    // Position just below the finger number row
+    const ypos = ys + bh + ffs * 1.4;
+    let xpos = xs + 0.5 * lw;
+
+    for (const note of tuning) {
+      const w = ctx.measureText(note).width;
+      ctx.fillText(note, xpos - 0.5 * w, ypos);
       xpos += fw + lw;
     }
   }

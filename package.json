@@ -1,0 +1,13 @@
+{
+  "name": "guitar-chord-image-generator",
+  "version": "1.0.0",
+  "description": "Generate guitar chord box images as PNG. Node.js port of einaregilsson/ChordImageGenerator.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "canvas": "^3.2.1",
+    "express": "^4.18.2"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl:*)",
+      "Bash(node:*)",
+      "Bash(otool:*)",
+      "Bash(npm rebuild:*)",
+      "Bash(npm show:*)",
+      "Bash(npm install:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}

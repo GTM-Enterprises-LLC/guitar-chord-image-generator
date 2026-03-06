@@ -23,7 +23,7 @@ const FONT_NAME = 'Arial';
 const FONT_PERC = 0.905;
 
 class ChordBoxImage {
-  constructor(name, chord, fingers, size) {
+  constructor(name, chord, fingers, size, baseFret) {
     this._chordPositions = [0, 0, 0, 0, 0, 0];
     this._fingers = [NO_FINGER, NO_FINGER, NO_FINGER, NO_FINGER, NO_FINGER, NO_FINGER];
     this._error = false;
@@ -31,6 +31,7 @@ class ChordBoxImage {
 
     this._chordName = this._parseName(name);
     this._parseChord(chord);
+    this._parseBaseFret(baseFret);
     this._parseFingers(fingers);
     this._parseSize(size);
     this._initializeSizes();
@@ -73,6 +74,19 @@ class ChordBoxImage {
       const d = parseFloat(size);
       this._size = isNaN(d) ? 1 : Math.min(Math.max(1, Math.round(d)), 10);
     }
+  }
+
+  _parseBaseFret(baseFret) {
+    if (baseFret == null) return;
+    const bf = parseInt(baseFret, 10);
+    if (isNaN(bf) || bf < 1) return;
+    // Incoming positions are relative (1 = first shown fret); convert to absolute.
+    for (let i = 0; i < 6; i++) {
+      if (this._chordPositions[i] > 0) {
+        this._chordPositions[i] += bf - 1;
+      }
+    }
+    this._baseFret = bf;
   }
 
   _parseFingers(fingers) {

@@ -18,12 +18,13 @@ const PORT = process.env.PORT || 3000;
  */
 app.get(/^\/(.+)\.png$/i, (req, res) => {
   const chordName = req.params[0];
-  const pos     = req.query.pos     || req.query.p || '000000';
-  const fingers = req.query.fingers || req.query.f || '------';
-  const size    = req.query.size    || req.query.s || '1';
+  const pos      = req.query.pos      || req.query.p || '000000';
+  const fingers  = req.query.fingers  || req.query.f || '------';
+  const size     = req.query.size     || req.query.s || '1';
+  const baseFret = req.query.baseFret || req.query.b || null;
 
   try {
-    const image = new ChordBoxImage(chordName, pos, fingers, size);
+    const image = new ChordBoxImage(chordName, pos, fingers, size, baseFret);
 
     res.setHeader('Content-Type', 'image/png');
     res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days
